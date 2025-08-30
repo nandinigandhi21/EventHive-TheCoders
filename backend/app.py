@@ -46,7 +46,7 @@ def send_email(receiver, otp):
     except Exception as e:
         print("❌ Email send failed:", e)
 
-# ---------------- Routes ---------------- #
+# ---------------- Auth Routes ---------------- #
 @app.route("/api/signup", methods=["POST"])
 def signup():
     data = request.json
@@ -60,6 +60,7 @@ def signup():
     send_email(email, otp)
 
     return jsonify({"message": f"OTP sent to {email}"})
+
 
 @app.route("/api/verify-otp", methods=["POST"])
 def verify_otp():
@@ -80,6 +81,7 @@ def verify_otp():
         return jsonify({"status": "success"})
     return jsonify({"status": "error", "message": "Invalid OTP"}), 400
 
+
 @app.route("/api/login", methods=["POST"])
 def login():
     data = request.json
@@ -87,8 +89,68 @@ def login():
     user = User.query.filter_by(email=email, password=password).first()
 
     if user:
-        return jsonify({"status": "success", "role": user.role})
+        return jsonify({
+            "status": "success",
+            "role": user.role,
+            "id": user.id,
+            "username": user.username
+        })
     return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+
+
+# ---------------- Admin Routes ---------------- #
+@app.route("/api/admin/users", methods=["GET"])
+def get_all_users():
+    users = User.query.all()
+    return jsonify([{
+        "id": u.id,
+        "username": u.username,
+        "email": u.email,
+        "phone": u.phone,
+        "role": u.role
+    } for u in users])
+
+
+@app.route("/api/admin/users/<int:user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"msg": "User deleted"})
+
+
+@app.route("/api/admin/users/<int:user_id>/role", methods=["PUT"])
+def update_role(user_id):
+    data = request.json
+    new_role = data.get("role")
+    if new_role not in ("attendee", "organizer", "admin"):
+        return jsonify({"error": "Invalid role"}), 400
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    user.role = new_role
+    db.session.commit()
+    return jsonify({"msg": f"Role updated to {new_role}"})
+
+
+@app.route("/api/admin/stats", methods=["GET"])
+def get_stats():
+    total_users = User.query.count()
+    attendees = User.query.filter_by(role="attendee").count()
+    organizers = User.query.filter_by(role="organizer").count()
+    admins = User.query.filter_by(role="admin").count()
+
+    return jsonify({
+        "total_users": total_users,
+        "attendees": attendees,
+        "organizers": organizers,
+        "admins": admins
+    })
+
 
 if __name__ == "__main__":
     app.run(debug=True)

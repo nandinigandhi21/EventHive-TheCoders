@@ -10,6 +10,7 @@
   <!-- Global Custom Styles -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body class="bg-[#F8FAFC] text-[#1E293B] font-sans">
 
   <!-- Navbar -->
@@ -38,16 +39,57 @@
     <section class="md:col-span-1 bg-white rounded-lg shadow p-5">
       <h2 class="text-lg font-semibold mb-4 text-[#2563EB]">Create New Event</h2>
       <form id="createEventForm" class="space-y-3">
+
+        <!-- Event Title -->
         <input type="text" placeholder="Event Title" required class="w-full px-3 py-2 border rounded">
+
+        <!-- Description -->
+        <textarea placeholder="Event Description" rows="3" required class="w-full px-3 py-2 border rounded"></textarea>
+
+        <!-- Category -->
+        <select required class="w-full px-3 py-2 border rounded">
+          <option value="">Select Category</option>
+          <option>Sports</option>
+          <option>Hackathons</option>
+          <option>Travel</option>
+          <option>Concert</option>
+          <option>Others</option>
+        </select>
+
+        <!-- Date & Time -->
         <input type="date" required class="w-full px-3 py-2 border rounded">
+        <input type="time" required class="w-full px-3 py-2 border rounded">
+
+        <!-- Location -->
         <input type="text" placeholder="Location" required class="w-full px-3 py-2 border rounded">
-        <select class="w-full px-3 py-2 border rounded">
+
+        <!-- Ticket Type -->
+        <select required class="w-full px-3 py-2 border rounded">
+          <option value="">Select Ticket Type</option>
           <option>General</option>
           <option>VIP</option>
           <option>Student</option>
           <option>Early Bird</option>
         </select>
+
+        <!-- Price -->
         <input type="number" placeholder="Price (₹)" required class="w-full px-3 py-2 border rounded">
+
+        <!-- Max Quantity -->
+        <input type="number" placeholder="Max Tickets Available" required class="w-full px-3 py-2 border rounded">
+
+        <!-- Status -->
+        <select required class="w-full px-3 py-2 border rounded">
+          <option value="">Select Status</option>
+          <option>Draft</option>
+          <option>Published</option>
+          <option>Unpublished</option>
+        </select>
+
+        <!-- Organizer ID -->
+        <input type="text" placeholder="Organizer ID" required class="w-full px-3 py-2 border rounded">
+
+        <!-- Submit Button -->
         <button type="submit" class="w-full bg-[#2563EB] text-white py-2 rounded font-semibold hover:bg-[#1D4ED8] transition">
           Publish Event
         </button>
@@ -61,7 +103,7 @@
       <!-- Event Card -->
       <div class="border rounded p-3 mb-3">
         <h3 class="font-bold">Tech Hackathon 2025</h3>
-        <p class="text-sm text-gray-600">📅 March 5, 2025 | 📍 Bangalore</p>
+        <p class="text-sm text-gray-600">📅 March 5, 2025 | ⏰ 10:00 AM | 📍 Bangalore</p>
         <p class="text-sm"><span class="font-semibold">Tickets Sold:</span> 120</p>
         <button class="mt-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
       </div>
@@ -69,7 +111,7 @@
       <!-- Event Card -->
       <div class="border rounded p-3">
         <h3 class="font-bold">Startup Meetup</h3>
-        <p class="text-sm text-gray-600">📅 April 15, 2025 | 📍 Mumbai</p>
+        <p class="text-sm text-gray-600">📅 April 15, 2025 | ⏰ 3:00 PM | 📍 Mumbai</p>
         <p class="text-sm"><span class="font-semibold">Tickets Sold:</span> 75</p>
         <button class="mt-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
       </div>
