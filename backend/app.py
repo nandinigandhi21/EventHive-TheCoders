@@ -40,8 +40,7 @@ class Event(db.Model):
     organizer_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
 with app.app_context():
-    db.drop_all()   # delete all existing tables (and data)
-    db.create_all() # recreate tables with new schema
+    db.create_all()
 
 
 otp_store = {}
@@ -67,7 +66,8 @@ def send_email(receiver, otp):
     except Exception as e:
         print("Email send failed:", e)
 
-# ---------------- Routes ---------------- #
+
+# ---------------- Auth Routes ---------------- #
 @app.route("/api/signup", methods=["POST"])
 def signup():
     data = request.json
@@ -81,6 +81,7 @@ def signup():
     send_email(email, otp)
 
     return jsonify({"message": f"OTP sent to {email}"})
+
 
 @app.route("/api/verify-otp", methods=["POST"])
 def verify_otp():
@@ -101,6 +102,7 @@ def verify_otp():
         return jsonify({"status": "success"})
     return jsonify({"status": "error", "message": "Invalid OTP"}), 400
 
+
 @app.route("/api/login", methods=["POST"])
 def login():
     data = request.json
@@ -108,8 +110,102 @@ def login():
     user = User.query.filter_by(email=email, password=password).first()
 
     if user:
-        return jsonify({"status": "success", "role": user.role})
+        return jsonify({"status": "success", "role": user.role, "user_id": user.id})
     return jsonify({"status": "error", "message": "Invalid credentials"}), 401
+
+
+# ---------------- Event Routes ---------------- #
+@app.route("/api/events/create", methods=["POST"])
+def create_event():
+    try:
+        data = request.json
+
+        new_event = Event(
+            title=data["title"],
+            description=data["description"],
+            category=data["category"],
+            date=data["date"],
+            time=data["time"],
+            location=data["location"],
+            ticket_type=data["ticket_type"],
+            price=float(data["price"]),
+            max_quantity=int(data["max_quantity"]),
+            status=data.get("status", "draft"),
+            organizer_id=int(data["organizer_id"])
+        )
+
+        db.session.add(new_event)
+        db.session.commit()
+
+        return jsonify({"message": "Event created successfully!", "event_id": new_event.id}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/api/events/my-events/<int:organizer_id>", methods=["GET"])
+def get_my_events(organizer_id):
+    try:
+        events = Event.query.filter_by(organizer_id=organizer_id).all()
+        events_list = [
+            {
+                "id": e.id,
+                "title": e.title,
+                "description": e.description,
+                "category": e.category,
+                "date": e.date,
+                "time": e.time,
+                "location": e.location,
+                "ticket_type": e.ticket_type,
+                "price": e.price,
+                "max_quantity": e.max_quantity,
+                "status": e.status,
+            }
+            for e in events
+        ]
+        return jsonify(events_list), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/api/events/delete/<int:event_id>", methods=["DELETE"])
+def delete_event(event_id):
+    try:
+        event = Event.query.get(event_id)
+        if not event:
+            return jsonify({"error": "Event not found"}), 404
+
+        db.session.delete(event)
+        db.session.commit()
+        return jsonify({"message": "Event deleted successfully!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# ---------------- Attendee Routes ---------------- #
+@app.route("/api/events", methods=["GET"])
+def get_all_events():
+    try:
+        # Show only published events to attendees
+        events = Event.query.filter_by(status="published").all()
+        events_list = [
+            {
+                "id": e.id,
+                "title": e.title,
+                "description": e.description,
+                "category": e.category,
+                "date": e.date,
+                "time": e.time,
+                "location": e.location,
+                "ticket_type": e.ticket_type,
+                "price": e.price,
+                "max_quantity": e.max_quantity,
+                "organizer_id": e.organizer_id
+            }
+            for e in events
+        ]
+        return jsonify(events_list), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 if __name__ == "__main__":
     app.run(debug=True)
