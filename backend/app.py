@@ -12,16 +12,36 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///eventhive.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# ---------------- Models ---------------- #
 class User(db.Model):
+    __tablename__ = "users"
+
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100))
+    username = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     phone = db.Column(db.String(20))
     password = db.Column(db.String(100))
     role = db.Column(db.String(20))
 
+class Event(db.Model):
+    __tablename__ = "events"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(50), nullable=False)   # workshop, concert, sports, etc.
+    date = db.Column(db.String(20), nullable=False)
+    time = db.Column(db.String(20), nullable=False)
+    location = db.Column(db.String(200), nullable=False)
+    ticket_type = db.Column(db.String(50), nullable=False) # General, VIP, etc.
+    price = db.Column(db.Float, nullable=False)
+    max_quantity = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.String(20), default="draft")     # draft or published
+    organizer_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+
 with app.app_context():
     db.create_all()
+
 
 otp_store = {}
 
