@@ -26,14 +26,14 @@
     <form id="loginForm" class="space-y-4">
       <!-- Email or Username -->
       <div>
-        <label class="block text-sm font-medium">Email or Username</label>
-        <input type="text" placeholder="Enter email or username" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+        <label class="block text-sm font-medium">Email</label>
+        <input type="text" id="email" placeholder="Enter email" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
       </div>
 
       <!-- Password -->
       <div>
         <label class="block text-sm font-medium">Password</label>
-        <input type="password" placeholder="Enter password" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+        <input type="password" id="password" placeholder="Enter password" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
       </div>
 
       <!-- Role Selection -->
@@ -60,20 +60,52 @@
     </p>
   </div>
 
-  <!-- Simple Redirect Logic -->
+  <!-- Updated Login Logic -->
   <script>
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
+    const API_BASE = "http://127.0.0.1:5000/api"; // 🔗 adjust if your backend URL is different
+
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
       e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
       const role = document.getElementById("role").value;
 
-      if (role === "attendee") {
-        window.location.href = "attendees.html";
-      } else if (role === "organizer") {
-        window.location.href = "organizer.html";
-      } else if (role === "admin") {
-        window.location.href = "admin.html";
-      } else {
+      if (!role) {
         alert("Please select a role.");
+        return;
+      }
+
+      try {
+        // Call backend login API
+        const res = await fetch(`${API_BASE}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, role })
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          // ✅ Save user_id (from backend response) into localStorage
+          localStorage.setItem("user_id", result.user_id);
+
+          alert("✅ Login successful!");
+
+          // Redirect based on role
+          if (role === "attendee") {
+            window.location.href = "attendees.html";
+          } else if (role === "organizer") {
+            window.location.href = "organizer.html";
+          } else if (role === "admin") {
+            window.location.href = "admin.html";
+          }
+        } else {
+          alert("❌ " + (result.error || "Login failed"));
+        }
+      } catch (err) {
+        console.error("Login error:", err);
+        alert("⚠️ Backend not reachable!");
       }
     });
   </script>

@@ -1,15 +1,24 @@
 // assets/js/admin-events.js
-// Fetch events, filter/search, publish toggle, delete.
-// Backend: GET /api/events, PATCH /api/events/:id/toggle, DELETE /api/events/:id
+// Manage events: fetch, filter/search, publish toggle, delete
 
 const API_BASE = "http://127.0.0.1:5000";
 
 let allEvents = [];
 
+// Utility to get headers with token
+function getAuthHeaders() {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {})
+  };
+}
+
 function statusPill(status) {
-  const cl = status === "published"
-    ? "bg-emerald-100 text-emerald-700"
-    : "bg-amber-100 text-amber-700";
+  const cl =
+    status === "published"
+      ? "bg-emerald-100 text-emerald-700"
+      : "bg-amber-100 text-amber-700";
   return `<span class="px-2 py-1 rounded text-xs ${cl}">${status}</span>`;
 }
 
@@ -32,7 +41,9 @@ function card(e) {
     </div>
 
     <div class="mt-4 flex gap-2">
-      <button class="px-3 py-2 rounded bg-[#7A5C42] text-white text-xs hover:opacity-90" onclick="toggle(${e.id})">${e.status === "published" ? "Unpublish" : "Publish"}</button>
+      <button class="px-3 py-2 rounded bg-[#7A5C42] text-white text-xs hover:opacity-90" onclick="toggle(${e.id})">
+        ${e.status === "published" ? "Unpublish" : "Publish"}
+      </button>
       <a class="px-3 py-2 rounded bg-gray-100 text-gray-800 text-xs hover:opacity-90" href="organizer-edit.html?eventId=${e.id}">Edit</a>
       <button class="px-3 py-2 rounded bg-rose-600 text-white text-xs hover:opacity-90" onclick="removeEvent(${e.id})">Delete</button>
     </div>
@@ -62,12 +73,14 @@ async function fetchEvents() {
   params.set("limit", 100);
 
   try {
-    const res = await fetch(`${API_BASE}/api/events?${params.toString()}`);
-    if (!res.ok) throw 0;
+    const res = await fetch(`${API_BASE}/api/events?${params.toString()}`, {
+      headers: getAuthHeaders()
+    });
+    if (!res.ok) throw new Error("Failed to fetch events");
     const data = await res.json();
     allEvents = data.items || [];
-  } catch {
-    // Fallback demo data
+  } catch (err) {
+    console.warn("Using fallback demo data:", err.message);
     allEvents = [
       { id: 1, title: "AI Bootcamp", description: "Deep dive into ML & DL.", category: "workshop", date:"2025-10-02", time:"10:00 AM", location:"Bengaluru", ticket_type:"General", status:"published" },
       { id: 2, title: "City Marathon", description: "5k, 10k, Half Marathon", category: "sports", date:"2025-09-10", time:"6:00 AM", location:"Mumbai", ticket_type:"General", status:"draft" },
@@ -86,41 +99,44 @@ function applyFilters() {
 }
 
 async function toggle(eventId) {
-  const organizerId = localStorage.getItem("user_id"); 
   try {
     const res = await fetch(`${API_BASE}/api/events/${eventId}/toggle`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ organizer_id: organizerId || 0 })
+      headers: getAuthHeaders()
     });
-    if (!res.ok) throw 0;
-    allEvents = allEvents.map(e => e.id === eventId ? { ...e, status: e.status === "published" ? "draft" : "published" } : e);
+    if (!res.ok) throw new Error();
+    // update local state
+    allEvents = allEvents.map(e =>
+      e.id === eventId
+        ? { ...e, status: e.status === "published" ? "draft" : "published" }
+        : e
+    );
     applyFilters();
   } catch {
-    alert("Failed to toggle status (ensure backend route and permissions).");
+    alert("Failed to toggle status (check backend route & auth).");
   }
 }
 
 async function removeEvent(eventId) {
-  const organizerId = localStorage.getItem("user_id");
   if (!confirm("Delete this event?")) return;
   try {
     const res = await fetch(`${API_BASE}/api/events/${eventId}`, {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ organizer_id: organizerId || 0 })
+      headers: getAuthHeaders()
     });
-    if (!res.ok) throw 0;
+    if (!res.ok) throw new Error();
     allEvents = allEvents.filter(e => e.id !== eventId);
     applyFilters();
   } catch {
-    alert("Failed to delete event (ensure backend route and permissions).");
+    alert("Failed to delete event (check backend route & auth).");
   }
 }
 
+// Event listeners
 document.getElementById("refreshBtn").addEventListener("click", fetchEvents);
 document.getElementById("statusFilter").addEventListener("change", fetchEvents);
 document.getElementById("categoryFilter").addEventListener("change", fetchEvents);
 document.getElementById("searchEvent").addEventListener("input", applyFilters);
 
+// Initial load
 fetchEvents();

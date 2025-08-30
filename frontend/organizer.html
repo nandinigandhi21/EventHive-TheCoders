@@ -169,7 +169,6 @@
         let totalRevenue = 0;
 
         events.forEach(ev => {
-          // --- NEW CODE (safer number conversion) ---
           totalTickets += Number(ev.max_quantity);
           totalRevenue += Number(ev.price) * Number(ev.max_quantity);
 
@@ -205,18 +204,13 @@
       }
     }
 
-    // --- NEW CODE: Auto-load events on page load ---
-    window.addEventListener("DOMContentLoaded", () => {
-      const organizerIdInput = document.querySelector("input[name='organizer_id']");
-      if (organizerIdInput && organizerIdInput.value) {
-        loadMyEvents(organizerIdInput.value);
-      }
-    });
-
-    // --- NEW CODE: Auto-fill organizer_id if stored in localStorage ---
+    // --- FIXED CODE: Auto-fill organizer_id and load events ---
     const orgIdField = document.querySelector("input[name='organizer_id']");
-    if (localStorage.getItem("user_id")) {
-      orgIdField.value = localStorage.getItem("user_id");
+    const storedId = localStorage.getItem("user_id");
+
+    if (storedId) {
+      orgIdField.value = storedId;
+      loadMyEvents(storedId); // ✅ immediately load events on login
     }
   </script>
 
