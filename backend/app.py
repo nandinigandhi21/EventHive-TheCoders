@@ -206,6 +206,146 @@ def get_all_events():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+# ---------------- Admin Routes (Manage Users) ---------------- #
+
+@app.route("/api/admin/users", methods=["GET"])
+def get_all_users():
+    try:
+        users = User.query.all()
+        users_list = [
+            {
+                "id": u.id,
+                "username": u.username,
+                "email": u.email,
+                "phone": u.phone,
+                "role": u.role
+            }
+            for u in users
+        ]
+        return jsonify(users_list), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/api/admin/users/<int:user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    try:
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({"message": "User deleted successfully!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/api/admin/users/<int:user_id>/role", methods=["PUT"])
+def update_role(user_id):
+    try:
+        data = request.json
+        new_role = data.get("role")
+
+        if new_role not in ("attendee", "organizer", "admin"):
+            return jsonify({"error": "Invalid role"}), 400
+
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        user.role = new_role
+        db.session.commit()
+        return jsonify({
+            "message": f"Role updated to {new_role}",
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "role": user.role
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/api/admin/stats", methods=["GET"])
+def get_stats():
+    try:
+        total_users = User.query.count()
+        attendees = User.query.filter_by(role="attendee").count()
+        organizers = User.query.filter_by(role="organizer").count()
+        admins = User.query.filter_by(role="admin").count()
+
+        return jsonify({
+            "total_users": total_users,
+            "attendees": attendees,
+            "organizers": organizers,
+            "admins": admins
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# ---------------- Admin Event Management Routes ---------------- #
+
+@app.route("/api/admin/events", methods=["GET"])
+def admin_get_all_events():
+    try:
+        events = Event.query.all()
+        events_list = [
+            {
+                "id": e.id,
+                "title": e.title,
+                "description": e.description,
+                "category": e.category,
+                "date": e.date,
+                "time": e.time,
+                "location": e.location,
+                "ticket_type": e.ticket_type,
+                "price": e.price,
+                "max_quantity": e.max_quantity,
+                "status": e.status,
+                "organizer_id": e.organizer_id
+            }
+            for e in events
+        ]
+        return jsonify(events_list), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/api/admin/events/<int:event_id>/status", methods=["PUT"])
+def admin_update_event_status(event_id):
+    try:
+        data = request.json
+        new_status = data.get("status")
+
+        if new_status not in ["draft", "published"]:
+            return jsonify({"error": "Invalid status"}), 400
+
+        event = Event.query.get(event_id)
+        if not event:
+            return jsonify({"error": "Event not found"}), 404
+
+        event.status = new_status
+        db.session.commit()
+        return jsonify({"message": f"Event status updated to {new_status}"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/api/admin/events/<int:event_id>", methods=["DELETE"])
+def admin_delete_event(event_id):
+    try:
+        event = Event.query.get(event_id)
+        if not event:
+            return jsonify({"error": "Event not found"}), 404
+
+        db.session.delete(event)
+        db.session.commit()
+        return jsonify({"message": "Event deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
