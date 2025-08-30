@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHive – Events Map</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Global Custom Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-- Inline Map Styling -->
+  <style>
+    #map {
+      width: 100%;
+      height: 500px;
+      border-radius: 12px;
+      border: 2px solid #2563EB;
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B] font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-8 w-8">
+      <span class="text-xl font-bold text-[#2563EB]">EventHive</span>
+    </div>
+    <div class="space-x-4">
+      <a href="index.html" class="hover:text-[#2563EB]">Home</a>
+      <a href="my-tickets.html" class="hover:text-[#2563EB]">My Tickets</a>
+      <a href="login.html" class="bg-[#2563EB] text-white px-3 py-1 rounded hover:bg-[#1D4ED8] transition">Login</a>
+    </div>
+  </nav>
+
+  <!-- Map Section -->
+  <main class="max-w-6xl mx-auto mt-8 p-6">
+    <h2 class="text-2xl font-bold text-[#2563EB] mb-4">Events Near You</h2>
+    <p class="text-gray-600 mb-6">Explore upcoming events pinned on the interactive map.</p>
+
+    <div id="map">🗺️ Map Placeholder (Google Maps/Leaflet will be integrated here)</div>
+
+    <!-- Events List -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white shadow rounded-lg p-4 hover:shadow-lg transition">
+        <h3 class="text-lg font-semibold text-[#1E293B]">🎶 Live Music Festival</h3>
+        <p class="text-sm text-gray-600">City Auditorium, Aug 14</p>
+        <button class="mt-2 bg-[#2563EB] text-white px-3 py-1 rounded hover:bg-[#1D4ED8] transition">
+          View on Map
+        </button>
+      </div>
+      <div class="bg-white shadow rounded-lg p-4 hover:shadow-lg transition">
+        <h3 class="text-lg font-semibold text-[#1E293B]">💎 Jewelry Exhibition</h3>
+        <p class="text-sm text-gray-600">Dream Bazaar, Aug 11-12</p>
+        <button class="mt-2 bg-[#2563EB] text-white px-3 py-1 rounded hover:bg-[#1D4ED8] transition">
+          View on Map
+        </button>
+      </div>
+      <div class="bg-white shadow rounded-lg p-4 hover:shadow-lg transition">
+        <h3 class="text-lg font-semibold text-[#1E293B]">🎾 Tennis Tournament</h3>
+        <p class="text-sm text-gray-600">Greenfield Courts, Jan 25</p>
+        <button class="mt-2 bg-[#2563EB] text-white px-3 py-1 rounded hover:bg-[#1D4ED8] transition">
+          View on Map
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Demo Script -->
+  <script>
+    document.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        alert("📍 Event location will be shown on the map (demo).");
+      });
+    });
+  </script>
+
+</body>
+</html>

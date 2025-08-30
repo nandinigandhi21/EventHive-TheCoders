@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHive – Book Tickets</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B] font-sans min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-10 w-10">
+      <span class="text-2xl font-bold text-[#2563EB]">EventHive</span>
+    </div>
+    <div class="space-x-4">
+      <a href="index.html" class="hover:text-[#2563EB]">Home</a>
+      <a href="my-tickets.html" class="hover:text-[#2563EB]">My Tickets</a>
+      <a href="login.html" class="bg-[#2563EB] text-white px-3 py-1 rounded hover:bg-[#1D4ED8] transition">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-grow max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-8 mt-8">
+    <h2 class="text-2xl font-semibold mb-6 text-center text-[#2563EB]">🎟️ Book Your Tickets</h2>
+
+    <!-- Event Summary -->
+    <div class="mb-6 border-b pb-4">
+      <h3 class="text-lg font-semibold">Live Music Festival</h3>
+      <p class="text-sm text-[#64748B]">📍 City Auditorium • 📅 Aug 14, 2025 • ⏰ 7:00 PM</p>
+    </div>
+
+    <!-- Booking Form -->
+    <form id="bookingForm" class="space-y-6">
+
+      <!-- Ticket Selection -->
+      <div>
+        <label class="block text-sm font-medium">Select Ticket Type</label>
+        <select id="ticketType" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+          <option value="General">General – ₹500</option>
+          <option value="VIP">VIP – ₹1200</option>
+          <option value="Student">Student – ₹300</option>
+        </select>
+      </div>
+
+      <!-- Quantity -->
+      <div>
+        <label class="block text-sm font-medium">Quantity</label>
+        <input type="number" id="quantity" value="1" min="1" max="5" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+      </div>
+
+      <!-- Attendee Details -->
+      <div>
+        <label class="block text-sm font-medium">Full Name</label>
+        <input type="text" id="name" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Email</label>
+        <input type="email" id="email" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Phone Number</label>
+        <input type="tel" id="phone" required placeholder="10-digit number" pattern="[0-9]{10}" class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+      </div>
+
+      <!-- Booking Summary -->
+      <div id="summary" class="bg-[#EFF6FF] border rounded p-4 text-sm">
+        <p><span class="font-semibold">Ticket Type:</span> General</p>
+        <p><span class="font-semibold">Quantity:</span> 1</p>
+        <p><span class="font-semibold">Total Price:</span> ₹500</p>
+      </div>
+
+      <!-- Confirm Button -->
+      <button type="submit" class="w-full bg-[#2563EB] text-white py-2 rounded font-semibold hover:bg-[#1D4ED8] transition">
+        Proceed to Payment
+      </button>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-[#64748B] text-center py-4 mt-10 border-t">
+    <p>© 2025 EventHive. All rights reserved.</p>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    const ticketType = document.getElementById("ticketType");
+    const quantity = document.getElementById("quantity");
+    const summary = document.getElementById("summary");
+
+    function updateSummary() {
+      let price = 500;
+      if (ticketType.value === "VIP") price = 1200;
+      if (ticketType.value === "Student") price = 300;
+
+      const qty = parseInt(quantity.value) || 1;
+      summary.innerHTML = `
+        <p><span class="font-semibold">Ticket Type:</span> ${ticketType.value}</p>
+        <p><span class="font-semibold">Quantity:</span> ${qty}</p>
+        <p><span class="font-semibold">Total Price:</span> ₹${price * qty}</p>
+      `;
+    }
+
+    ticketType.addEventListener("change", updateSummary);
+    quantity.addEventListener("input", updateSummary);
+
+    document.getElementById("bookingForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("✅ Booking successful! (mock payment flow)");
+      window.location.href = "my-tickets.html"; // redirect to My Tickets page
+    });
+
+    updateSummary(); // initialize
+  </script>
+</body>
+</html>

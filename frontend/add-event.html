@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHive – Add Event</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Link to your custom CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B] font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-8 w-8">
+      <span class="text-xl font-bold text-[#2563EB]">EventHive</span>
+    </div>
+    <a href="organizer.html" class="hover:text-[#2563EB]">Back to Dashboard</a>
+  </nav>
+
+  <!-- Add Event Form -->
+  <main class="max-w-4xl mx-auto bg-white shadow-md rounded-lg mt-8 p-8">
+    <h2 class="text-2xl font-bold text-[#2563EB] mb-6">Create New Event</h2>
+
+    <form class="space-y-6">
+      <!-- Event Title -->
+      <div>
+        <label class="block text-sm font-medium">Event Title</label>
+        <input type="text" placeholder="Enter event title" required
+          class="w-full mt-1 px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB]">
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="block text-sm font-medium">Description</label>
+        <textarea placeholder="Enter event description" rows="4" required
+          class="w-full mt-1 px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB]"></textarea>
+      </div>
+
+      <!-- Date & Time -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium">Date</label>
+          <input type="date" required class="w-full mt-1 px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB]">
+        </div>
+        <div>
+          <label class="block text-sm font-medium">Time</label>
+          <input type="time" required class="w-full mt-1 px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB]">
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div>
+        <label class="block text-sm font-medium">Location</label>
+        <input type="text" placeholder="Enter location" required
+          class="w-full mt-1 px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB]">
+      </div>
+
+      <!-- Category -->
+      <div>
+        <label class="block text-sm font-medium">Category</label>
+        <select required class="w-full mt-1 px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB]">
+          <option value="">-- Select Category --</option>
+          <option>Workshop</option>
+          <option>Concert</option>
+          <option>Sports</option>
+          <option>Hackathon</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <!-- Ticket Types -->
+      <div>
+        <label class="block text-sm font-medium">Ticket Types</label>
+        <div class="space-y-2 mt-2">
+          <div class="flex gap-4">
+            <input type="text" placeholder="Ticket Type (e.g. General)" class="flex-1 px-3 py-2 border rounded">
+            <input type="number" placeholder="Price (₹)" class="w-32 px-3 py-2 border rounded">
+            <input type="number" placeholder="Quantity" class="w-32 px-3 py-2 border rounded">
+          </div>
+        </div>
+        <button type="button" class="mt-2 text-sm text-[#2563EB] hover:underline">+ Add Another Ticket Type</button>
+      </div>
+
+      <!-- Publish Options -->
+      <div class="flex items-center gap-4">
+        <button type="submit" class="bg-[#2563EB] text-white px-6 py-2 rounded font-semibold hover:bg-[#1D4ED8] transition">
+          Publish Event
+        </button>
+        <button type="button" class="bg-gray-200 text-gray-700 px-6 py-2 rounded font-semibold hover:bg-gray-300 transition">
+          Save as Draft
+        </button>
+      </div>
+    </form>
+  </main>
+
+</body>
+</html>
