@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHive – Event Check-In</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B] font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-8 w-8">
+      <span class="text-xl font-bold text-[#2563EB]">EventHive</span>
+    </div>
+    <a href="organizer.html" class="hover:text-[#2563EB]">Back to Dashboard</a>
+  </nav>
+
+  <!-- Check-in Section -->
+  <main class="max-w-4xl mx-auto bg-white shadow-md rounded-lg mt-8 p-8">
+    <h2 class="text-2xl font-bold text-[#2563EB] mb-6">Event Check-In</h2>
+
+    <!-- QR Scanner Area -->
+    <div class="flex flex-col items-center space-y-6">
+      <div class="w-72 h-72 border-2 border-dashed border-[#2563EB] rounded-lg flex items-center justify-center text-gray-500">
+        📷 Camera Scanner Placeholder  
+      </div>
+      <p class="text-sm text-gray-600">Point the camera at attendee’s QR/Barcode to validate entry.</p>
+
+      <!-- Manual Entry -->
+      <div class="w-full">
+        <label class="block text-sm font-medium">Enter Ticket ID (if scanner not working)</label>
+        <div class="flex mt-2 gap-2">
+          <input type="text" placeholder="Ticket ID" class="flex-1 px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB]">
+          <button id="validateBtn" class="bg-[#2563EB] text-white px-4 py-2 rounded hover:bg-[#1D4ED8] transition">Validate</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Check-in Results -->
+    <div id="checkinResult" class="mt-8 hidden p-4 rounded-lg"></div>
+  </main>
+
+  <!-- Demo Script -->
+  <script>
+    const resultBox = document.getElementById("checkinResult");
+    const validateBtn = document.getElementById("validateBtn");
+
+    validateBtn.addEventListener("click", () => {
+      resultBox.classList.remove("hidden");
+      resultBox.className = "mt-8 p-4 rounded-lg bg-green-100 text-green-700";
+      resultBox.innerText = "✅ Ticket Validated! Attendee checked in successfully.";
+    });
+  </script>
+
+</body>
+</html>
