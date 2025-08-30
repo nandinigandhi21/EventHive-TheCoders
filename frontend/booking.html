@@ -10,82 +10,84 @@
   <!-- Custom Styles -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="bg-[#F8FAFC] text-[#1E293B] font-sans min-h-screen flex flex-col">
+<body class="bg-gradient-to-br from-[#E0F2FE] via-[#F8FAFC] to-[#FDE68A] text-[#1E293B] font-sans min-h-screen flex flex-col">
 
   <!-- Navbar -->
-  <nav class="bg-white shadow p-4 flex justify-between items-center">
+  <nav class="bg-white/80 backdrop-blur-lg shadow-lg p-4 flex justify-between items-center sticky top-0 z-10">
     <div class="flex items-center space-x-2">
-      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-10 w-10">
+      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-10 w-10 drop-shadow-md">
       <span class="text-2xl font-bold text-[#2563EB]">EventHive</span>
     </div>
     <div class="space-x-4">
-      <a href="index.html" class="hover:text-[#2563EB]">Home</a>
-      <a href="my-tickets.html" class="hover:text-[#2563EB]">My Tickets</a>
-      <a href="login.html" class="bg-[#2563EB] text-white px-3 py-1 rounded hover:bg-[#1D4ED8] transition">Logout</a>
+      <a href="index.html" class="hover:text-[#2563EB] transition">Home</a>
+      <a href="my-tickets.html" class="hover:text-[#2563EB] transition">My Tickets</a>
+      <a href="login.html" class="bg-[#2563EB] shadow-md text-white px-3 py-1 rounded-full hover:bg-[#1D4ED8] transition">Logout</a>
     </div>
   </nav>
 
   <!-- Main Content -->
-  <main class="flex-grow max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-8 mt-8">
-    <h2 class="text-2xl font-semibold mb-6 text-center text-[#2563EB]">🎟️ Book Your Tickets</h2>
+  <main class="flex-grow flex items-center justify-center p-6">
+    <div class="max-w-3xl w-full bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl p-10 animate-fadeIn">
+      <h2 class="text-3xl font-extrabold mb-8 text-center text-[#2563EB] drop-shadow-md">🎟️ Book Your Tickets</h2>
 
-    <!-- Event Summary -->
-    <div class="mb-6 border-b pb-4">
-      <h3 class="text-lg font-semibold">Live Music Festival</h3>
-      <p class="text-sm text-[#64748B]">📍 City Auditorium • 📅 Aug 14, 2025 • ⏰ 7:00 PM</p>
+      <!-- Event Summary -->
+      <div class="mb-6 border-b pb-4 text-center">
+        <h3 class="text-xl font-semibold">🎶 Live Music Festival</h3>
+        <p class="text-sm text-[#64748B] mt-1">📍 City Auditorium • 📅 Aug 14, 2025 • ⏰ 7:00 PM</p>
+      </div>
+
+      <!-- Booking Form -->
+      <form id="bookingForm" class="space-y-6">
+
+        <!-- Ticket Selection -->
+        <div>
+          <label class="block text-sm font-medium mb-1">🎫 Select Ticket Type</label>
+          <select id="ticketType" class="w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none transition">
+            <option value="General">General – ₹500</option>
+            <option value="VIP">VIP – ₹1200</option>
+            <option value="Student">Student – ₹300</option>
+          </select>
+        </div>
+
+        <!-- Quantity -->
+        <div>
+          <label class="block text-sm font-medium mb-1">🔢 Quantity</label>
+          <input type="number" id="quantity" value="1" min="1" max="5" class="w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none transition">
+        </div>
+
+        <!-- Attendee Details -->
+        <div>
+          <label class="block text-sm font-medium mb-1">👤 Full Name</label>
+          <input type="text" id="name" required class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none transition">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">📧 Email</label>
+          <input type="email" id="email" required class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none transition">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">📱 Phone Number</label>
+          <input type="tel" id="phone" required placeholder="10-digit number" pattern="[0-9]{10}" class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none transition">
+        </div>
+
+        <!-- Booking Summary -->
+        <div id="summary" class="bg-[#EFF6FF] border rounded-lg p-4 text-sm shadow-inner">
+          <p><span class="font-semibold">Ticket Type:</span> General</p>
+          <p><span class="font-semibold">Quantity:</span> 1</p>
+          <p><span class="font-semibold">Total Price:</span> ₹500</p>
+        </div>
+
+        <!-- Confirm Button -->
+        <button type="submit" class="w-full bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] text-white py-3 rounded-xl font-semibold shadow-lg hover:scale-105 transition transform">
+          🚀 Proceed to Payment
+        </button>
+      </form>
     </div>
-
-    <!-- Booking Form -->
-    <form id="bookingForm" class="space-y-6">
-
-      <!-- Ticket Selection -->
-      <div>
-        <label class="block text-sm font-medium">Select Ticket Type</label>
-        <select id="ticketType" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
-          <option value="General">General – ₹500</option>
-          <option value="VIP">VIP – ₹1200</option>
-          <option value="Student">Student – ₹300</option>
-        </select>
-      </div>
-
-      <!-- Quantity -->
-      <div>
-        <label class="block text-sm font-medium">Quantity</label>
-        <input type="number" id="quantity" value="1" min="1" max="5" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
-      </div>
-
-      <!-- Attendee Details -->
-      <div>
-        <label class="block text-sm font-medium">Full Name</label>
-        <input type="text" id="name" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium">Email</label>
-        <input type="email" id="email" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium">Phone Number</label>
-        <input type="tel" id="phone" required placeholder="10-digit number" pattern="[0-9]{10}" class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
-      </div>
-
-      <!-- Booking Summary -->
-      <div id="summary" class="bg-[#EFF6FF] border rounded p-4 text-sm">
-        <p><span class="font-semibold">Ticket Type:</span> General</p>
-        <p><span class="font-semibold">Quantity:</span> 1</p>
-        <p><span class="font-semibold">Total Price:</span> ₹500</p>
-      </div>
-
-      <!-- Confirm Button -->
-      <button type="submit" class="w-full bg-[#2563EB] text-white py-2 rounded font-semibold hover:bg-[#1D4ED8] transition">
-        Proceed to Payment
-      </button>
-    </form>
   </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-100 text-[#64748B] text-center py-4 mt-10 border-t">
+  <footer class="bg-white/70 backdrop-blur text-[#64748B] text-center py-4 border-t shadow-inner">
     <p>© 2025 EventHive. All rights reserved.</p>
   </footer>
 
