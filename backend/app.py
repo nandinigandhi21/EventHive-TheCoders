@@ -16,6 +16,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+from routes.events import events_bp  # Updated for your filename
+app.register_blueprint(events_bp, url_prefix="/api/events")
+
 # ---------------- Models ---------------- #
 class User(db.Model):
     __tablename__ = "users"
