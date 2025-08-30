@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHive – Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B] font-sans flex items-center justify-center h-screen">
+
+  <!-- Login Card -->
+  <div class="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
+    <!-- Logo -->
+    <div class="flex items-center justify-center mb-6">
+      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-12 w-12">
+      <span class="ml-2 text-2xl font-bold text-[#2563EB]">EventHive</span>
+    </div>
+
+    <h2 class="text-xl font-semibold text-center mb-6">Login to EventHive</h2>
+
+    <!-- Login Form -->
+    <form id="loginForm" class="space-y-4">
+      <!-- Email or Username -->
+      <div>
+        <label class="block text-sm font-medium">Email or Username</label>
+        <input type="text" placeholder="Enter email or username" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label class="block text-sm font-medium">Password</label>
+        <input type="password" placeholder="Enter password" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+      </div>
+
+      <!-- Role Selection -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Select Role</label>
+        <select id="role" required class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+          <option value="">-- Choose Role --</option>
+          <option value="attendee">Attendee</option>
+          <option value="organizer">Organizer</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <!-- Login Button -->
+      <button type="submit" class="w-full bg-[#2563EB] text-white py-2 rounded font-semibold hover:bg-[#1D4ED8] transition">
+        Login
+      </button>
+    </form>
+
+    <!-- Sign Up Option -->
+    <p class="text-center text-sm text-gray-600 mt-4">
+      Don’t have an account? 
+      <a href="signup.html" class="text-[#2563EB] hover:underline">Sign up</a>
+    </p>
+  </div>
+
+  <!-- Simple Redirect Logic -->
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const role = document.getElementById("role").value;
+
+      if (role === "attendee") {
+        window.location.href = "my-tickets.html";
+      } else if (role === "organizer") {
+        window.location.href = "organizer.html";
+      } else if (role === "admin") {
+        window.location.href = "admin.html";
+      } else {
+        alert("Please select a role.");
+      }
+    });
+  </script>
+
+</body>
+</html>

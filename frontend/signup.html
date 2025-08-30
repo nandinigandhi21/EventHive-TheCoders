@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHive – Sign Up</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B] font-sans flex items-center justify-center h-screen">
+
+  <!-- Signup Card -->
+  <div class="bg-white shadow-xl rounded-lg p-8 w-full max-w-md">
+    <!-- Logo -->
+    <div class="flex items-center justify-center mb-6">
+      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-12 w-12">
+      <span class="ml-2 text-2xl font-bold text-[#2563EB]">EventHive</span>
+    </div>
+
+    <h2 class="text-xl font-semibold text-center mb-6">Create Your Account</h2>
+
+    <!-- Signup Form -->
+    <form id="signupForm" class="space-y-4">
+      <!-- Username -->
+      <div>
+        <label class="block text-sm font-medium">Username</label>
+        <input type="text" id="username" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-medium">Email</label>
+        <input type="email" id="email" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+      </div>
+
+      <!-- Phone -->
+      <div>
+        <label class="block text-sm font-medium">Phone Number</label>
+        <input type="tel" id="phone" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none" pattern="[0-9]{10}" placeholder="10-digit number">
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label class="block text-sm font-medium">Password</label>
+        <input type="password" id="password" required class="mt-1 w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+      </div>
+
+      <!-- Role Selection -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Select Role</label>
+        <select id="role" required class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+          <option value="">-- Choose Role --</option>
+          <option value="attendee">Attendee</option>
+          <option value="organizer">Organizer</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <!-- Register Button -->
+      <button type="submit" class="w-full bg-[#2563EB] text-white py-2 rounded font-semibold hover:bg-[#1D4ED8] transition">
+        Register
+      </button>
+    </form>
+
+    <!-- Already have an account -->
+    <p class="text-center text-sm text-gray-600 mt-4">
+      Already have an account? <a href="login.html" class="text-[#2563EB] hover:underline">Login here</a>
+    </p>
+  </div>
+
+  <!-- OTP Modal (Hidden initially) -->
+  <div id="otpModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+      <h3 class="text-lg font-semibold mb-4">Verify OTP</h3>
+      <p class="text-sm text-gray-600 mb-2">Enter the 6-digit OTP sent to your phone/email</p>
+      <input type="text" id="otpInput" maxlength="6" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none mb-4">
+      <button id="verifyOtpBtn" class="w-full bg-[#2563EB] text-white py-2 rounded font-semibold hover:bg-[#1D4ED8] transition">
+        Verify OTP
+      </button>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const signupForm = document.getElementById("signupForm");
+    const otpModal = document.getElementById("otpModal");
+    const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+
+    signupForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      // Normally, backend sends OTP here
+      otpModal.classList.remove("hidden");
+    });
+
+    verifyOtpBtn.addEventListener("click", function() {
+      const otp = document.getElementById("otpInput").value;
+      const role = document.getElementById("role").value;
+
+      if (otp === "123456") { // mock OTP for demo
+        alert("✅ Account created successfully as " + role + "!");
+        window.location.href = "login.html";
+      } else {
+        alert("❌ Invalid OTP. Try again.");
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHive – Event Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B] font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-8 w-8">
+      <span class="text-xl font-bold text-[#2563EB]">EventHive</span>
+    </div>
+    <div class="space-x-4">
+      <a href="index.html" class="hover:text-[#2563EB]">Home</a>
+      <a href="login.html" class="bg-[#2563EB] text-white px-3 py-1 rounded hover:bg-[#1D4ED8] transition">Login</a>
+    </div>
+  </nav>
+
+  <!-- Event Details -->
+  <main class="max-w-5xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+    
+    <!-- Event Image -->
+    <div>
+      <img src="assets/img/sample-event.jpg" alt="Event Image" class="rounded-lg shadow-lg w-full h-80 object-cover">
+    </div>
+
+    <!-- Event Info -->
+    <div>
+      <h1 class="text-3xl font-bold text-[#2563EB]">Live Music Festival</h1>
+      <p class="text-gray-600 mt-2">📍 City Auditorium | 📅 August 14, 2025</p>
+      <p class="mt-4 text-sm leading-relaxed">
+        Experience an unforgettable night of live performances by top bands and artists. 
+        Enjoy music, food, and community vibes all in one place.
+      </p>
+
+      <!-- Ticket Booking -->
+      <div class="mt-6 space-y-4">
+        <!-- Ticket Type -->
+        <div>
+          <label class="block text-sm font-medium mb-1">Select Ticket Type</label>
+          <select id="ticketType" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+            <option value="general">General – ₹500</option>
+            <option value="vip">VIP – ₹1200</option>
+            <option value="student">Student – ₹300</option>
+          </select>
+        </div>
+
+        <!-- Ticket Quantity -->
+        <div>
+          <label class="block text-sm font-medium mb-1">Number of Tickets</label>
+          <input type="number" id="ticketQty" value="1" min="1" max="10" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB] focus:outline-none">
+        </div>
+
+        <!-- Book Button -->
+        <button id="bookBtn" class="w-full bg-[#2563EB] text-white py-2 rounded font-semibold hover:bg-[#1D4ED8] transition">
+          Book Ticket
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-gray-600 text-center py-4 mt-10 border-t">
+    <p>© 2025 EventHive. All rights reserved.</p>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    document.getElementById("bookBtn").addEventListener("click", () => {
+      const type = document.getElementById("ticketType").value;
+      const qty = document.getElementById("ticketQty").value;
+      alert(`✅ ${qty} ${type.toUpperCase()} ticket(s) booked! Redirecting to payment...`);
+      // Later integrate with Flask + Payment Gateway
+      window.location.href = "my-tickets.html";
+    });
+  </script>
+
+</body>
+</html>

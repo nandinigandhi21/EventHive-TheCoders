@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHive – My Tickets</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B] font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-8 w-8">
+      <span class="text-xl font-bold text-[#2563EB]">EventHive</span>
+    </div>
+    <div class="space-x-4">
+      <a href="index.html" class="hover:text-[#2563EB]">Home</a>
+      <a href="my-tickets.html" class="text-[#2563EB] font-semibold">My Tickets</a>
+      <a href="login.html" class="bg-[#2563EB] text-white px-3 py-1 rounded hover:bg-[#1D4ED8] transition">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-[#2563EB] text-white text-center py-10">
+    <h1 class="text-3xl font-bold">🎟 My Tickets</h1>
+    <p class="text-blue-100">View and manage your booked events</p>
+  </header>
+
+  <!-- Tickets Section -->
+  <main class="p-6 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+    <!-- Ticket Card 1 -->
+    <div class="bg-white rounded-lg shadow-md p-5 flex flex-col">
+      <h2 class="text-lg font-bold text-[#2563EB]">Tech Hackathon 2025</h2>
+      <p class="text-sm text-gray-600">📅 March 5, 2025 | 📍 Bangalore</p>
+      <p class="mt-2 text-sm"><span class="font-semibold">Ticket Type:</span> Student</p>
+      <p class="text-sm"><span class="font-semibold">Booking ID:</span> EVH12345</p>
+
+      <!-- QR Code (placeholder) -->
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=EVH12345" alt="QR Code" class="mt-4 mx-auto">
+
+      <div class="mt-4 flex justify-between">
+        <button class="bg-[#2563EB] text-white px-3 py-1 rounded hover:bg-[#1D4ED8] transition">Download</button>
+        <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Ticket Card 2 -->
+    <div class="bg-white rounded-lg shadow-md p-5 flex flex-col">
+      <h2 class="text-lg font-bold text-[#2563EB]">Startup Networking Meetup</h2>
+      <p class="text-sm text-gray-600">📅 April 15, 2025 | 📍 Mumbai</p>
+      <p class="mt-2 text-sm"><span class="font-semibold">Ticket Type:</span> VIP</p>
+      <p class="text-sm"><span class="font-semibold">Booking ID:</span> EVH67890</p>
+
+      <!-- QR Code (placeholder) -->
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=EVH67890" alt="QR Code" class="mt-4 mx-auto">
+
+      <div class="mt-4 flex justify-between">
+        <button class="bg-[#2563EB] text-white px-3 py-1 rounded hover:bg-[#1D4ED8] transition">Download</button>
+        <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">Cancel</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-gray-600 text-center py-4 mt-10 border-t">
+    <p>© 2025 EventHive. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

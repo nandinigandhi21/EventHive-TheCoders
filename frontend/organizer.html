@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHive – Organizer Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B] font-sans">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-8 w-8">
+      <span class="text-xl font-bold text-[#2563EB]">EventHive</span>
+    </div>
+    <div class="space-x-4">
+      <a href="index.html" class="hover:text-[#2563EB]">Home</a>
+      <a href="organizer.html" class="text-[#2563EB] font-semibold">Organizer Dashboard</a>
+      <a href="login.html" class="bg-[#2563EB] text-white px-3 py-1 rounded hover:bg-[#1D4ED8] transition">Logout</a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-[#2563EB] text-white text-center py-10">
+    <h1 class="text-3xl font-bold">📊 Organizer Dashboard</h1>
+    <p class="text-blue-100">Manage your events, track tickets & revenue</p>
+  </header>
+
+  <main class="p-6 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <!-- Left Panel: Create Event -->
+    <section class="md:col-span-1 bg-white rounded-lg shadow p-5">
+      <h2 class="text-lg font-semibold mb-4 text-[#2563EB]">Create New Event</h2>
+      <form id="createEventForm" class="space-y-3">
+        <input type="text" placeholder="Event Title" required class="w-full px-3 py-2 border rounded">
+        <input type="date" required class="w-full px-3 py-2 border rounded">
+        <input type="text" placeholder="Location" required class="w-full px-3 py-2 border rounded">
+        <select class="w-full px-3 py-2 border rounded">
+          <option>General</option>
+          <option>VIP</option>
+          <option>Student</option>
+          <option>Early Bird</option>
+        </select>
+        <input type="number" placeholder="Price (₹)" required class="w-full px-3 py-2 border rounded">
+        <button type="submit" class="w-full bg-[#2563EB] text-white py-2 rounded font-semibold hover:bg-[#1D4ED8] transition">
+          Publish Event
+        </button>
+      </form>
+    </section>
+
+    <!-- Middle Panel: My Events -->
+    <section class="md:col-span-1 bg-white rounded-lg shadow p-5">
+      <h2 class="text-lg font-semibold mb-4 text-[#2563EB]">My Events</h2>
+      
+      <!-- Event Card -->
+      <div class="border rounded p-3 mb-3">
+        <h3 class="font-bold">Tech Hackathon 2025</h3>
+        <p class="text-sm text-gray-600">📅 March 5, 2025 | 📍 Bangalore</p>
+        <p class="text-sm"><span class="font-semibold">Tickets Sold:</span> 120</p>
+        <button class="mt-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+      </div>
+
+      <!-- Event Card -->
+      <div class="border rounded p-3">
+        <h3 class="font-bold">Startup Meetup</h3>
+        <p class="text-sm text-gray-600">📅 April 15, 2025 | 📍 Mumbai</p>
+        <p class="text-sm"><span class="font-semibold">Tickets Sold:</span> 75</p>
+        <button class="mt-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+      </div>
+    </section>
+
+    <!-- Right Panel: Analytics -->
+    <section class="md:col-span-1 bg-white rounded-lg shadow p-5">
+      <h2 class="text-lg font-semibold mb-4 text-[#2563EB]">Analytics</h2>
+      <div class="space-y-3">
+        <p class="text-sm"><span class="font-semibold">Total Events:</span> 2</p>
+        <p class="text-sm"><span class="font-semibold">Total Tickets Sold:</span> 195</p>
+        <p class="text-sm"><span class="font-semibold">Revenue:</span> ₹2,85,000</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-gray-600 text-center py-4 mt-10 border-t">
+    <p>© 2025 EventHive. All rights reserved.</p>
+  </footer>
+
+  <!-- JS -->
+  <script>
+    document.getElementById("createEventForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("✅ Event published successfully! (Demo only)");
+    });
+  </script>
+
+</body>
+</html>
