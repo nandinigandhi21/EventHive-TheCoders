@@ -13,7 +13,7 @@
 <body class="bg-[#F8FAFC] text-[#1E293B] font-sans">
 
   <!-- Navbar -->
-  <nav class="bg-white shadow p-4 flex justify-between items-center">
+  <nav class="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-50">
     <div class="flex items-center space-x-2">
       <img src="assets/img/logo.png" alt="EventHive Logo" class="h-8 w-8">
       <span class="text-xl font-bold text-[#2563EB]">EventHive</span>
@@ -30,49 +30,24 @@
 
   <!-- Filters -->
   <div class="flex justify-center items-center space-x-4 mt-6 px-6">
-    <select class="px-3 py-2 border rounded bg-white focus:ring-2 focus:ring-[#2563EB]">
-      <option>Category</option>
-      <option>Music</option>
-      <option>Sports</option>
-      <option>Workshops</option>
+    <select id="filterCategory" class="px-3 py-2 border rounded bg-white focus:ring-2 focus:ring-[#2563EB]">
+      <option value="">All Categories</option>
+      <option value="music">Music</option>
+      <option value="sports">Sports</option>
+      <option value="workshops">Workshops</option>
+      <option value="concert">Concert</option>
     </select>
-    <select class="px-3 py-2 border rounded bg-white focus:ring-2 focus:ring-[#2563EB]">
-      <option>Date</option>
-      <option>This Week</option>
-      <option>This Month</option>
+    <select id="filterTicket" class="px-3 py-2 border rounded bg-white focus:ring-2 focus:ring-[#2563EB]">
+      <option value="">All Types</option>
+      <option value="free">Free</option>
+      <option value="paid">Paid</option>
     </select>
-    <select class="px-3 py-2 border rounded bg-white focus:ring-2 focus:ring-[#2563EB]">
-      <option>Event Type</option>
-      <option>Free</option>
-      <option>Paid</option>
-    </select>
-    <input type="text" placeholder="Search events" class="px-4 py-2 border rounded w-64 focus:ring-2 focus:ring-[#2563EB]">
+    <input id="searchInput" type="text" placeholder="Search events" class="px-4 py-2 border rounded w-64 focus:ring-2 focus:ring-[#2563EB]">
   </div>
 
   <!-- Events Grid -->
-  <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 max-w-6xl mx-auto mt-6">
-    <!-- Event Card -->
-    <div class="bg-white shadow rounded-lg overflow-hidden hover:shadow-lg transition card-hover">
-      <img src="assets/img/sample-event.jpg" alt="Event Image" class="w-full h-40 object-cover">
-      <div class="p-4">
-        <h3 class="text-lg font-semibold">Live Music Festival</h3>
-        <p class="text-sm text-gray-600">Aug 14 • City Auditorium</p>
-        <p class="text-xs text-gray-500 mt-1">Experience live music, food & fun!</p>
-        <span class="inline-block mt-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Seats Available</span>
-      </div>
-    </div>
-
-    <div class="bg-white shadow rounded-lg overflow-hidden hover:shadow-lg transition card-hover">
-      <img src="assets/img/sample-event2.jpg" alt="Event Image" class="w-full h-40 object-cover">
-      <div class="p-4">
-        <h3 class="text-lg font-semibold">Jewelry Exhibition</h3>
-        <p class="text-sm text-gray-600">Aug 11-12 • Dream Bazaar</p>
-        <p class="text-xs text-gray-500 mt-1">Exclusive designs & treasure finds.</p>
-        <span class="inline-block mt-2 text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">Registration not yet open</span>
-      </div>
-    </div>
-
-    <!-- Add more cards as needed -->
+  <main id="eventsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6 max-w-6xl mx-auto mt-6">
+    <!-- Cards will be injected by JS -->
   </main>
 
   <!-- Pagination -->
@@ -84,5 +59,7 @@
     <button class="px-3 py-1 border rounded hover:bg-gray-100">&gt;</button>
   </div>
 
+  <!-- Script -->
+  <script src="assets/js/attendee-home.js"></script>
 </body>
 </html>
