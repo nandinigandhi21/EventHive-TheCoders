@@ -1,4 +1,4 @@
-def normalize_phone(phone: int):
+def normalize_phone(phone: str) -> str:
     return (phone or "").strip()
 
 def valid_role(role: str) -> bool:
