@@ -1,109 +1,71 @@
-// assets/js/admin.js
-// Fetch metrics, render KPIs, and draw charts. Falls back to mock data if API not ready.
-
-const fmt = (n) => new Intl.NumberFormat("en-IN").format(n);
-
 async function getMetrics() {
   try {
-    // Updated to match backend route: GET /api/admin/stats
-    const res = await fetch("/api/admin/stats", {
+    const res = await fetch("http://127.0.0.1:5001/api/admin/metrics", {
       headers: {
-        "Authorization": `Bearer ${localStorage.getItem("token")}` // ensure JWT is sent
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
       }
     });
-    if (!res.ok) throw new Error("stats endpoint failed");
+    if (!res.ok) throw new Error("metrics endpoint failed");
     const data = await res.json();
 
-    // Convert backend shape into frontend expected shape
     return {
       ok: true,
       totals: {
-        users: data.total_users,
-        organizers: data.organizers,
-        events: data.total_events || 0,   // if you later add events count
-        published: data.published || 0,   // placeholder
-        ticketsSold: data.tickets_sold || 0,
-        revenue: data.revenue || 0
+        users: data.totals.users,
+        organizers: data.totals.organizers,
+        events: data.totals.events,
+        published: data.totals.published,
+        ticketsSold: data.totals.ticketsSold,
+        revenue: data.totals.revenue
       },
-      timeseries: data.timeseries || {
-        days: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-        signups: [0,0,0,0,0,0,0],
-        bookings: [0,0,0,0,0,0,0]
-      },
-      categories: data.categories || { hackathon: 0, workshop: 0, concert: 0, sports: 0, other: 0 }
+      timeseries: data.timeseries,
+      categories: data.categories
     };
   } catch (e) {
-    console.warn("Falling back to mock metrics:", e.message);
-    // Fallback mock (so UI still looks great for judges)
-    return {
-      ok: true,
-      totals: {
-        users: 1280,
-        organizers: 42,
-        events: 156,
-        published: 98,
-        ticketsSold: 5230,
-        revenue: 1875000
-      },
-      timeseries: {
-        days: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-        signups: [32, 41, 50, 39, 44, 61, 57],
-        bookings: [70, 65, 80, 74, 89, 110, 95]
-      },
-      categories: { hackathon: 22, workshop: 48, concert: 36, sports: 18, other: 32 }
-    };
+    console.error("Failed to fetch metrics:", e.message);
+    return { ok: false };
   }
 }
 
-function renderKPIs(m) {
-  document.getElementById("kpiTotalUsers").textContent = fmt(m.totals.users);
-  document.getElementById("kpiTotalOrganizers").textContent = `Organizers: ${fmt(m.totals.organizers)}`;
-  document.getElementById("kpiTotalEvents").textContent = fmt(m.totals.events);
-  document.getElementById("kpiPublishedEvents").textContent = `Published: ${fmt(m.totals.published)}`;
-  document.getElementById("kpiTicketsSold").textContent = fmt(m.totals.ticketsSold);
-  document.getElementById("kpiRevenue").textContent = `₹ ${fmt(m.totals.revenue)}`;
-}
+async function renderDashboard() {
+  const metrics = await getMetrics();
+  if (!metrics.ok) return;
 
-function drawLineChart(days, signups, bookings) {
-  const ctx = document.getElementById("lineChart").getContext("2d");
-  new Chart(ctx, {
+  // Update KPIs
+  document.getElementById("totalUsers").textContent = metrics.totals.users;
+  document.getElementById("organizers").textContent = "Organizers: " + metrics.totals.organizers;
+  document.getElementById("totalEvents").textContent = metrics.totals.events;
+  document.getElementById("publishedEvents").textContent = "Published: " + metrics.totals.published;
+  document.getElementById("ticketsSold").textContent = metrics.totals.ticketsSold;
+  document.getElementById("revenue").textContent = "₹" + metrics.totals.revenue;
+
+  // Charts
+  const ctx1 = document.getElementById("signupsChart");
+  new Chart(ctx1, {
     type: "line",
     data: {
-      labels: days,
+      labels: metrics.timeseries.days,   // ✅ use correct field from backend
       datasets: [
-        { label: "Signups", data: signups, borderColor: "#3b82f6", backgroundColor: "rgba(59,130,246,0.3)", tension: 0.35 },
-        { label: "Bookings", data: bookings, borderColor: "#7A5C42", backgroundColor: "rgba(122,92,66,0.3)", tension: 0.35 }
+        { label: "Signups", data: metrics.timeseries.signups, borderColor: "blue" },
+        { label: "Bookings", data: metrics.timeseries.bookings, borderColor: "green" }
       ]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { position: "bottom" } },
-      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  const ctx2 = document.getElementById("categoryChart");
+  new Chart(ctx2, {
+    type: "doughnut",
+    data: {
+      labels: Object.keys(metrics.categories),
+      datasets: [{ data: Object.values(metrics.categories) }]
     }
   });
 }
 
-function drawDoughnutChart(categoryObj) {
-  const ctx = document.getElementById("doughnutChart").getContext("2d");
-  const labels = Object.keys(categoryObj);
-  const data = Object.values(categoryObj);
-  new Chart(ctx, {
-    type: "doughnut",
-    data: { 
-      labels, 
-      datasets: [{ 
-        data, 
-        backgroundColor: ["#7A5C42","#3b82f6","#10b981","#f59e0b","#ef4444"] 
-      }] 
-    },
-    options: { responsive: true, plugins: { legend: { position: "bottom" } } }
-  });
-}
+// Run on load
+renderDashboard();
 
-(async function init() {
-  const m = await getMetrics();
-  if (!m.ok) return;
-  renderKPIs(m);
-  drawLineChart(m.timeseries.days, m.timeseries.signups, m.timeseries.bookings);
-  drawDoughnutChart(m.categories);
-})();
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
+});

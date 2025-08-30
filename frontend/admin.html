@@ -1,105 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>EventHive – Admin Overview</title>
+  <meta charset="UTF-8">
+  <title>EventHive Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="assets/css/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="bg-[#F8FAFC] text-[#1E293B] font-sans">
+<body class="bg-gray-50 text-gray-800">
 
   <!-- Navbar -->
-  <nav class="bg-white/80 backdrop-blur shadow p-4 flex justify-between items-center sticky top-0 z-50">
-    <div class="flex items-center space-x-2">
-      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-8 w-8 rounded">
-      <span class="text-xl font-bold text-[#1E293B]">EventHive <span class="text-[#7A5C42]">Admin</span></span>
-    </div>
-    <div class="space-x-4">
-      <a href="index.html" class="hover:text-[#7A5C42]">Home</a>
-      <a href="admin.html" class="text-[#7A5C42] font-semibold">Overview</a>
-      <a href="login.html" class="bg-[#7A5C42] text-white px-3 py-1 rounded hover:opacity-90 transition">Logout</a>
+  <nav class="flex justify-between items-center p-4 bg-white shadow">
+    <h1 class="text-xl font-bold">EventHive Admin</h1>
+    <div>
+      <a href="admin.html" class="mr-4">Overview</a>
+      <button id="logoutBtn" class="bg-brown-500 text-white px-3 py-1 rounded">Logout</button>
     </div>
   </nav>
 
-  <!-- Header -->
-  <header class="bg-gradient-to-tr from-[#F2DCCB] via-white to-[#F8FAFC] border-b">
-    <div class="max-w-7xl mx-auto py-10 px-6">
-      <h1 class="text-3xl md:text-4xl font-bold">Platform Overview</h1>
-      <p class="text-slate-500 mt-1">Monitor growth, engagement, and operations at a glance.</p>
+  <!-- Dashboard Content -->
+  <main class="p-6">
+    <h2 class="text-2xl font-semibold mb-4">Platform Overview</h2>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <div class="bg-white p-4 rounded shadow">
+        <p class="text-gray-500">Total Users</p>
+        <h3 id="totalUsers" class="text-2xl font-bold">0</h3>
+        <p id="organizers" class="text-sm text-gray-400">Organizers: 0</p>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <p class="text-gray-500">Total Events</p>
+        <h3 id="totalEvents" class="text-2xl font-bold">0</h3>
+        <p id="publishedEvents" class="text-sm text-gray-400">Published: 0</p>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <p class="text-gray-500">Tickets Sold</p>
+        <h3 id="ticketsSold" class="text-2xl font-bold">0</h3>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <p class="text-gray-500">Revenue</p>
+        <h3 id="revenue" class="text-2xl font-bold">₹0</h3>
+      </div>
     </div>
-  </header>
 
-  <!-- KPIs -->
-  <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <!-- Card -->
-      <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-sm text-slate-500">Total Users</p>
-        <p id="kpiTotalUsers" class="text-3xl font-semibold mt-1">—</p>
-        <p id="kpiTotalOrganizers" class="text-xs text-slate-400 mt-1">Organizers: —</p>
-      </div>
-
-      <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-sm text-slate-500">Total Events</p>
-        <p id="kpiTotalEvents" class="text-3xl font-semibold mt-1">—</p>
-        <p id="kpiPublishedEvents" class="text-xs text-slate-400 mt-1">Published: —</p>
-      </div>
-
-      <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-sm text-slate-500">Tickets Sold</p>
-        <p id="kpiTicketsSold" class="text-3xl font-semibold mt-1">—</p>
-        <p class="text-xs text-slate-400 mt-1">Last 7 days trend</p>
-      </div>
-
-      <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-sm text-slate-500">Revenue</p>
-        <p id="kpiRevenue" class="text-3xl font-semibold mt-1">—</p>
-        <p class="text-xs text-slate-400 mt-1">INR</p>
-      </div>
-    </section>
+    <!-- Action Buttons -->
+    <div class="flex gap-4 mb-6">
+      <a href="admin-users.html" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">
+        Manage Users
+      </a>
+      <a href="admin-events.html" class="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600">
+        Manage Events
+      </a>
+    </div>
 
     <!-- Charts -->
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-2 bg-white rounded-xl shadow p-5">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-lg font-semibold">Signups & Bookings (7 days)</h2>
-          <span class="text-xs text-slate-500">Auto-updates</span>
-        </div>
-        <canvas id="lineChart"></canvas>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-semibold mb-2">Signups & Bookings</h3>
+        <canvas id="signupsChart" class="max-h-64"></canvas>
       </div>
-
-      <div class="bg-white rounded-xl shadow p-5">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-lg font-semibold">Events by Category</h2>
-          <span class="text-xs text-slate-500">Current distribution</span>
-        </div>
-        <canvas id="doughnutChart"></canvas>
+      <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-lg font-semibold mb-2">Events by Category</h3>
+        <canvas id="categoryChart" class="max-h-64"></canvas>
       </div>
-    </section>
-
-    <!-- Quick Links -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <a href="admin-users.html" class="bg-white rounded-xl shadow p-6 flex items-center justify-between hover:shadow-md transition">
-        <div>
-          <h3 class="text-xl font-semibold">Manage Users</h3>
-          <p class="text-sm text-slate-500 mt-1">Promote organizers, assign roles, remove spam.</p>
-        </div>
-        <span class="text-[#7A5C42] text-3xl">›</span>
-      </a>
-
-      <a href="admin-events.html" class="bg-white rounded-xl shadow p-6 flex items-center justify-between hover:shadow-md transition">
-        <div>
-          <h3 class="text-xl font-semibold">Manage Events</h3>
-          <p class="text-sm text-slate-500 mt-1">Publish/unpublish, edit, or delete events.</p>
-        </div>
-        <span class="text-[#7A5C42] text-3xl">›</span>
-      </a>
-    </section>
+    </div>
   </main>
 
-  <footer class="text-center text-slate-500 text-sm py-8">© 2025 EventHive. All rights reserved.</footer>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="assets/js/admin.js"></script>
 </body>
 </html>
