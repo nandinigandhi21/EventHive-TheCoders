@@ -1,6 +1,8 @@
 // assets/js/attendee.js
 
 let allEvents = [];
+let currentPage = 1;
+const perPage = 6; // how many events per page
 
 // ---------- Render Event Cards ----------
 function renderEvents(events) {
@@ -11,6 +13,7 @@ function renderEvents(events) {
       <div class="col-span-full text-center text-gray-500 bg-white shadow rounded-lg p-8">
         No events found
       </div>`;
+    document.getElementById("pagination").innerHTML = "";
     return;
   }
 
@@ -34,10 +37,37 @@ function renderEvents(events) {
   `).join("");
 }
 
+// ---------- Render Pagination ----------
+function renderPagination(totalItems) {
+  const pagination = document.getElementById("pagination");
+  const totalPages = Math.ceil(totalItems / perPage);
+  if (totalPages <= 1) {
+    pagination.innerHTML = "";
+    return;
+  }
+
+  pagination.innerHTML = `
+    <button onclick="changePage(${currentPage - 1})" class="px-3 py-1 border rounded hover:bg-gray-100" ${currentPage === 1 ? "disabled" : ""}>&lt;</button>
+    ${Array.from({ length: totalPages }, (_, i) => `
+      <button onclick="changePage(${i + 1})" 
+        class="px-3 py-1 border rounded ${currentPage === i + 1 ? "bg-[#2563EB] text-white" : "hover:bg-gray-100"}">
+        ${i + 1}
+      </button>
+    `).join("")}
+    <button onclick="changePage(${currentPage + 1})" class="px-3 py-1 border rounded hover:bg-gray-100" ${currentPage === totalPages ? "disabled" : ""}>&gt;</button>
+  `;
+}
+
+function changePage(page) {
+  currentPage = page;
+  applyFilters();
+}
+
 // ---------- Fetch Events from Backend ----------
 async function fetchEvents() {
   try {
-    const res = await fetch("/api/events");
+    const res = await fetch("http://127.0.0.1:5000/api/events");
+
     if (!res.ok) throw new Error("Failed to fetch events");
     const data = await res.json();
     allEvents = data.items || data; // backend may return {items: []} or []
@@ -59,13 +89,18 @@ function applyFilters() {
   const ticket = document.getElementById("filterTicket").value.toLowerCase();
   const search = document.getElementById("searchInput").value.toLowerCase();
 
-  const filtered = allEvents.filter(e =>
+  let filtered = allEvents.filter(e =>
     (!category || e.category?.toLowerCase() === category) &&
     (!ticket || e.ticket_type?.toLowerCase() === ticket) &&
     (e.title.toLowerCase().includes(search) || e.description.toLowerCase().includes(search))
   );
 
-  renderEvents(filtered);
+  // pagination slice
+  const start = (currentPage - 1) * perPage;
+  const paginated = filtered.slice(start, start + perPage);
+
+  renderEvents(paginated);
+  renderPagination(filtered.length);
 }
 
 // ---------- Card Click: Redirect to Details ----------
@@ -74,9 +109,9 @@ function viewEvent(id) {
 }
 
 // ---------- Attach Listeners ----------
-document.getElementById("filterCategory").addEventListener("change", applyFilters);
-document.getElementById("filterTicket").addEventListener("change", applyFilters);
-document.getElementById("searchInput").addEventListener("input", applyFilters);
+document.getElementById("filterCategory").addEventListener("change", () => { currentPage = 1; applyFilters(); });
+document.getElementById("filterTicket").addEventListener("change", () => { currentPage = 1; applyFilters(); });
+document.getElementById("searchInput").addEventListener("input", () => { currentPage = 1; applyFilters(); });
 
 // ---------- Init ----------
 fetchEvents();

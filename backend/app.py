@@ -5,6 +5,7 @@ import random, smtplib
 from email.mime.text import MIMEText
 import os
 from dotenv import load_dotenv
+from sqlalchemy import func
 
 load_dotenv()
 
@@ -16,9 +17,6 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-from routes.events import events_bp  # Updated for your filename
-app.register_blueprint(events_bp, url_prefix="/api/events")
-
 # ---------------- Models ---------------- #
 class User(db.Model):
     __tablename__ = "users"
@@ -29,6 +27,7 @@ class User(db.Model):
     phone = db.Column(db.String(20))
     password = db.Column(db.String(100))
     role = db.Column(db.String(20))
+
 
 class Event(db.Model):
     __tablename__ = "events"
@@ -48,7 +47,11 @@ class Event(db.Model):
 
 with app.app_context():
     db.create_all()
-
+    # 🔥 Fix existing statuses to lowercase (run once)
+    for e in Event.query.all():
+        if e.status:
+            e.status = e.status.lower()
+    db.session.commit()
 
 otp_store = {}
 
@@ -69,9 +72,9 @@ def send_email(receiver, otp):
         server.login(GMAIL_USER, GMAIL_PASS)
         server.sendmail(GMAIL_USER, receiver, msg.as_string())
         server.quit()
-        print(f"OTP sent to {receiver}")
+        print(f"✅ OTP sent to {receiver}")
     except Exception as e:
-        print("Email send failed:", e)
+        print("❌ Email send failed:", e)
 
 
 # ---------------- Auth Routes ---------------- #
@@ -137,7 +140,7 @@ def create_event():
             ticket_type=data["ticket_type"],
             price=float(data["price"]),
             max_quantity=int(data["max_quantity"]),
-            status=data.get("status", "draft"),
+            status=data.get("status", "draft").lower(),  # 🔥 Always lowercase
             organizer_id=int(data["organizer_id"])
         )
 
@@ -187,12 +190,13 @@ def delete_event(event_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+
 # ---------------- Attendee Routes ---------------- #
 @app.route("/api/events", methods=["GET"])
 def get_all_events():
     try:
-        # Show only published events to attendees
-        events = Event.query.filter_by(status="published").all()
+        # 🔥 Case-insensitive filter
+        events = Event.query.filter(func.lower(Event.status) == "published").all()
         events_list = [
             {
                 "id": e.id,
@@ -213,8 +217,8 @@ def get_all_events():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# ---------------- Admin Routes (Manage Users) ---------------- #
 
+# ---------------- Admin Routes (Users) ---------------- #
 @app.route("/api/admin/users", methods=["GET"])
 def get_all_users():
     try:
@@ -293,8 +297,8 @@ def get_stats():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# ---------------- Admin Event Management Routes ---------------- #
 
+# ---------------- Admin Event Routes ---------------- #
 @app.route("/api/admin/events", methods=["GET"])
 def admin_get_all_events():
     try:
@@ -325,7 +329,7 @@ def admin_get_all_events():
 def admin_update_event_status(event_id):
     try:
         data = request.json
-        new_status = data.get("status")
+        new_status = data.get("status", "").lower()
 
         if new_status not in ["draft", "published"]:
             return jsonify({"error": "Invalid status"}), 400
@@ -353,6 +357,7 @@ def admin_delete_event(event_id):
         return jsonify({"message": "Event deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
 
 if __name__ == "__main__":
     app.run(debug=True)
