@@ -6,44 +6,53 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@tailwindcss/forms"></script>
 
   <!-- Custom Styles -->
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="bg-[#F8FAFC] text-[#1E293B] font-sans">
+<body class="bg-gradient-to-br from-[#F8FAFC] to-[#E0F2FE] text-[#1E293B] font-sans min-h-screen">
 
   <!-- Navbar -->
-  <nav class="bg-white shadow p-4 flex justify-between items-center">
+  <nav class="bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] shadow p-4 flex justify-between items-center">
     <div class="flex items-center space-x-2">
-      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-8 w-8">
-      <span class="text-xl font-bold text-[#2563EB]">EventHive</span>
+      <img src="assets/img/logo.png" alt="EventHive Logo" class="h-8 w-8 drop-shadow-md">
+      <span class="text-xl font-bold text-white">EventHive</span>
     </div>
-    <a href="organizer.html" class="hover:text-[#2563EB]">Back to Dashboard</a>
+    <a href="organizer.html" class="text-white hover:text-yellow-300 font-medium transition">⬅ Back to Dashboard</a>
   </nav>
 
   <!-- Check-in Section -->
-  <main class="max-w-4xl mx-auto bg-white shadow-md rounded-lg mt-8 p-8">
-    <h2 class="text-2xl font-bold text-[#2563EB] mb-6">Event Check-In</h2>
+  <main class="max-w-4xl mx-auto bg-white/70 backdrop-blur-md shadow-xl rounded-2xl mt-12 p-10 border border-gray-100">
+    <h2 class="text-3xl font-extrabold text-[#2563EB] mb-8 text-center">🎟 Event Check-In</h2>
 
     <!-- QR Scanner Area -->
-    <div class="flex flex-col items-center space-y-6">
-      <div class="w-72 h-72 border-2 border-dashed border-[#2563EB] rounded-lg flex items-center justify-center text-gray-500">
-        📷 Camera Scanner Placeholder  
+    <div class="flex flex-col items-center space-y-8">
+      <!-- Scanner Box -->
+      <div class="w-72 h-72 border-4 border-dashed border-[#2563EB] rounded-xl flex items-center justify-center text-gray-400 text-lg font-medium bg-gradient-to-br from-white to-[#EFF6FF] shadow-inner">
+        📷 Scan QR / Barcode
       </div>
-      <p class="text-sm text-gray-600">Point the camera at attendee’s QR/Barcode to validate entry.</p>
+      <p class="text-sm text-gray-600">Point your camera at attendee’s QR/Barcode to validate entry.</p>
+
+      <!-- Divider -->
+      <div class="flex items-center w-full my-4">
+        <hr class="flex-grow border-gray-300">
+        <span class="px-3 text-gray-500 text-sm">or</span>
+        <hr class="flex-grow border-gray-300">
+      </div>
 
       <!-- Manual Entry -->
       <div class="w-full">
-        <label class="block text-sm font-medium">Enter Ticket ID (if scanner not working)</label>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Manual Ticket Entry</label>
         <div class="flex mt-2 gap-2">
-          <input type="text" placeholder="Ticket ID" class="flex-1 px-3 py-2 border rounded focus:ring-2 focus:ring-[#2563EB]">
-          <button id="validateBtn" class="bg-[#2563EB] text-white px-4 py-2 rounded hover:bg-[#1D4ED8] transition">Validate</button>
+          <input type="text" placeholder="Enter Ticket ID" class="flex-1 px-4 py-2 border-2 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition">
+          <button id="validateBtn" class="bg-[#2563EB] text-white px-6 py-2 rounded-lg shadow hover:bg-[#1D4ED8] active:scale-95 transition">Validate</button>
         </div>
       </div>
     </div>
 
     <!-- Check-in Results -->
-    <div id="checkinResult" class="mt-8 hidden p-4 rounded-lg"></div>
+    <div id="checkinResult" class="mt-10 hidden p-5 rounded-xl text-center text-lg font-semibold shadow"></div>
   </main>
 
   <!-- Demo Script -->
@@ -53,7 +62,7 @@
 
     validateBtn.addEventListener("click", () => {
       resultBox.classList.remove("hidden");
-      resultBox.className = "mt-8 p-4 rounded-lg bg-green-100 text-green-700";
+      resultBox.className = "mt-10 p-5 rounded-xl bg-green-100 text-green-700 text-center text-lg font-semibold shadow-lg animate-bounce";
       resultBox.innerText = "✅ Ticket Validated! Attendee checked in successfully.";
     });
   </script>
