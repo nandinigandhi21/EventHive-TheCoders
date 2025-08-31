@@ -70,7 +70,7 @@ async function fetchEvents() {
 
     if (!res.ok) throw new Error("Failed to fetch events");
     const data = await res.json();
-    allEvents = data.items || data; // backend may return {items: []} or []
+    allEvents = data.items || []; // ✅ always read items array
     applyFilters();
   } catch (err) {
     console.error("❌ Backend not ready, using fallback demo data", err);

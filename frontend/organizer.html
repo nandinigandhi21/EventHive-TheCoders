@@ -39,14 +39,9 @@
     <section class="md:col-span-1 bg-white rounded-lg shadow p-5">
       <h2 class="text-lg font-semibold mb-4 text-[#2563EB]">Create New Event</h2>
       <form id="createEventForm" class="space-y-3">
-
-        <!-- Event Title -->
         <input type="text" name="title" placeholder="Event Title" required class="w-full px-3 py-2 border rounded">
-
-        <!-- Description -->
         <textarea name="description" placeholder="Event Description" rows="3" required class="w-full px-3 py-2 border rounded"></textarea>
 
-        <!-- Category -->
         <select name="category" required class="w-full px-3 py-2 border rounded">
           <option value="">Select Category</option>
           <option>Sports</option>
@@ -56,14 +51,10 @@
           <option>Others</option>
         </select>
 
-        <!-- Date & Time -->
         <input type="date" name="date" required class="w-full px-3 py-2 border rounded">
         <input type="time" name="time" required class="w-full px-3 py-2 border rounded">
-
-        <!-- Location -->
         <input type="text" name="location" placeholder="Location" required class="w-full px-3 py-2 border rounded">
 
-        <!-- Ticket Type -->
         <select name="ticket_type" required class="w-full px-3 py-2 border rounded">
           <option value="">Select Ticket Type</option>
           <option>General</option>
@@ -72,13 +63,9 @@
           <option>Early Bird</option>
         </select>
 
-        <!-- Price -->
         <input type="number" name="price" placeholder="Price (₹)" required class="w-full px-3 py-2 border rounded">
-
-        <!-- Max Quantity -->
         <input type="number" name="max_quantity" placeholder="Max Tickets Available" required class="w-full px-3 py-2 border rounded">
 
-        <!-- Status -->
         <select name="status" required class="w-full px-3 py-2 border rounded">
           <option value="">Select Status</option>
           <option>Draft</option>
@@ -86,10 +73,8 @@
           <option>Unpublished</option>
         </select>
 
-        <!-- Organizer ID -->
         <input type="text" name="organizer_id" placeholder="Organizer ID" required class="w-full px-3 py-2 border rounded">
 
-        <!-- Submit Button -->
         <button type="submit" class="w-full bg-[#2563EB] text-white py-2 rounded font-semibold hover:bg-[#1D4ED8] transition">
           Publish Event
         </button>
@@ -99,9 +84,7 @@
     <!-- Middle Panel: My Events -->
     <section class="md:col-span-1 bg-white rounded-lg shadow p-5">
       <h2 class="text-lg font-semibold mb-4 text-[#2563EB]">My Events</h2>
-      <div id="myEventsList">
-        <!-- Events will be dynamically loaded here -->
-      </div>
+      <div id="myEventsList"></div>
     </section>
 
     <!-- Right Panel: Analytics -->
@@ -116,19 +99,17 @@
 
   </main>
 
-  <!-- Footer -->
   <footer class="bg-gray-100 text-gray-600 text-center py-4 mt-10 border-t">
     <p>© 2025 EventHive. All rights reserved.</p>
   </footer>
 
   <!-- JS -->
   <script>
-    const API_BASE = "http://127.0.0.1:5000/api/events"; // Flask backend
+    const API_BASE = "http://127.0.0.1:5000/api/events";
 
-    // Handle Create Event form submission
+    // Create Event
     document.getElementById("createEventForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-
       const formData = new FormData(this);
       const data = Object.fromEntries(formData.entries());
 
@@ -143,7 +124,7 @@
         if (res.ok) {
           alert("✅ Event created successfully!");
           this.reset();
-          loadMyEvents(data.organizer_id); // refresh events
+          loadMyEvents(data.organizer_id); // refresh
         } else {
           alert("❌ Error: " + result.error);
         }
@@ -153,11 +134,12 @@
       }
     });
 
-    // Load "My Events"
+    // Load My Events
     async function loadMyEvents(organizerId) {
       try {
         const res = await fetch(`${API_BASE}/my-events/${organizerId}`);
-        const events = await res.json();
+        const data = await res.json();
+        const events = data.items || [];   // ✅ FIXED
 
         const container = document.querySelector("#myEventsList");
         const analytics = document.querySelector("#analyticsPanel");
@@ -188,7 +170,6 @@
           <p class="text-sm"><span class="font-semibold">Total Tickets (Available):</span> ${totalTickets}</p>
           <p class="text-sm"><span class="font-semibold">Revenue (Est.):</span> ₹${totalRevenue}</p>
         `;
-
       } catch (err) {
         console.error("Error loading events", err);
       }
@@ -204,13 +185,13 @@
       }
     }
 
-    // --- FIXED CODE: Auto-fill organizer_id and load events ---
+    // Auto-fill organizer ID + load events
     const orgIdField = document.querySelector("input[name='organizer_id']");
     const storedId = localStorage.getItem("user_id");
 
     if (storedId) {
       orgIdField.value = storedId;
-      loadMyEvents(storedId); // ✅ immediately load events on login
+      loadMyEvents(storedId);
     }
   </script>
 
