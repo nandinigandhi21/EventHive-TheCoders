@@ -1,20 +1,55 @@
+# backend/routes/admin.py
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
+from sqlalchemy import func, cast, Date
 from backend.models import db, User, Event, Ticket
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/api/admin")
 
-# ------------------ Dashboard Stats ------------------
-@admin_bp.route("/stats", methods=["GET"])
+# ------------------ Dashboard Metrics ------------------
+@admin_bp.route("/metrics", methods=["GET"])
 @jwt_required()
-def get_stats():
+def get_metrics():
     try:
+        # Totals
         total_users = User.query.count()
         organizers = User.query.filter_by(role="organizer").count()
         total_events = Event.query.count()
         published_events = Event.query.filter_by(status="published").count()
-        tickets_sold = db.session.query(db.func.sum(Ticket.quantity)).scalar() or 0
-        revenue = db.session.query(db.func.sum(Ticket.price * Ticket.quantity)).scalar() or 0
+        tickets_sold = db.session.query(func.coalesce(func.sum(Ticket.quantity), 0)).scalar()
+        revenue = db.session.query(func.coalesce(func.sum(Ticket.price * Ticket.quantity), 0)).scalar()
+
+        # --- Timeseries (last 7 days signups + bookings) ---
+        signup_data = (
+            db.session.query(cast(User.created_at, Date), func.count(User.id))
+            .group_by(cast(User.created_at, Date))
+            .order_by(cast(User.created_at, Date))
+            .all()
+        )
+        booking_data = (
+            db.session.query(cast(Ticket.created_at, Date), func.coalesce(func.sum(Ticket.quantity), 0))
+            .group_by(cast(Ticket.created_at, Date))
+            .order_by(cast(Ticket.created_at, Date))
+            .all()
+        )
+
+        signup_dict = {str(day): count for day, count in signup_data}
+        booking_dict = {str(day): count for day, count in booking_data}
+
+        days = sorted(set(signup_dict.keys()) | set(booking_dict.keys()))
+        timeseries = {
+            "days": days,
+            "signups": [signup_dict.get(d, 0) for d in days],
+            "bookings": [booking_dict.get(d, 0) for d in days],
+        }
+
+        # --- Categories ---
+        category_data = (
+            db.session.query(Event.category, func.count(Event.id))
+            .group_by(Event.category)
+            .all()
+        )
+        categories = {c or "Uncategorized": count for c, count in category_data}
 
         return jsonify({
             "ok": True,
@@ -24,11 +59,12 @@ def get_stats():
                 "events": total_events,
                 "published": published_events,
                 "ticketsSold": tickets_sold,
-                "revenue": revenue
+                "revenue": revenue,
             },
-            "timeseries": {"labels": [], "signups": [], "bookings": []},
-            "categories": {"Music": 0, "Sports": 0, "Tech": 0}
+            "timeseries": timeseries,
+            "categories": categories,
         })
+
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
 
@@ -45,9 +81,11 @@ def list_users():
             "email": u.email,
             "phone": u.phone,
             "role": u.role,
-        } for u in users
+        }
+        for u in users
     ]
     return jsonify(items)
+
 
 @admin_bp.route("/users/<int:user_id>/role", methods=["PUT"])
 @jwt_required()
@@ -58,6 +96,7 @@ def update_user_role(user_id):
     user.role = new_role
     db.session.commit()
     return jsonify({"ok": True, "id": user.id, "role": user.role})
+
 
 @admin_bp.route("/users/<int:user_id>", methods=["DELETE"])
 @jwt_required()
@@ -84,9 +123,11 @@ def list_events():
             "location": e.location,
             "ticket_type": e.ticket_type,
             "status": e.status,
-        } for e in events
+        }
+        for e in events
     ]
     return jsonify({"items": items})
+
 
 @admin_bp.route("/events/<int:event_id>/toggle", methods=["PATCH"])
 @jwt_required()
@@ -95,6 +136,7 @@ def toggle_event_status(event_id):
     event.status = "draft" if event.status == "published" else "published"
     db.session.commit()
     return jsonify({"ok": True, "id": event.id, "status": event.status})
+
 
 @admin_bp.route("/events/<int:event_id>", methods=["DELETE"])
 @jwt_required()

@@ -4,14 +4,14 @@ const token = localStorage.getItem("token");
 async function fetchEvents() {
   try {
     const res = await fetch(`${API_BASE}/events`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
 
     const tbody = document.getElementById("eventsTable");
     tbody.innerHTML = "";
 
-    data.items.forEach(e => {
+    data.items.forEach((e) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td class="px-4 py-2">${e.id}</td>
@@ -35,7 +35,7 @@ async function fetchEvents() {
 async function toggleEvent(id) {
   await fetch(`${API_BASE}/events/${id}/toggle`, {
     method: "PATCH",
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   });
 
   fetchEvents();
@@ -46,7 +46,7 @@ async function deleteEvent(id) {
 
   await fetch(`${API_BASE}/events/${id}`, {
     method: "DELETE",
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   });
 
   fetchEvents();
