@@ -28,32 +28,16 @@
   <!-- Main Content -->
   <main class="flex-grow flex items-center justify-center p-6">
     <div class="max-w-3xl w-full bg-white/80 backdrop-blur-lg shadow-2xl rounded-2xl p-10 animate-fadeIn">
-      <h2 class="text-3xl font-extrabold mb-8 text-center text-[#2563EB] drop-shadow-md">🎟️ Book Your Tickets</h2>
+      <h2 class="text-3xl font-extrabold mb-8 text-center text-[#2563EB] drop-shadow-md">🎟 Book Your Tickets</h2>
 
       <!-- Event Summary -->
       <div class="mb-6 border-b pb-4 text-center">
-        <h3 class="text-xl font-semibold">🎶 Live Music Festival</h3>
-        <p class="text-sm text-[#64748B] mt-1">📍 City Auditorium • 📅 Aug 14, 2025 • ⏰ 7:00 PM</p>
+        <h3 class="text-xl font-semibold">Hackathon</h3>
+        <p class="text-sm text-[#64748B] mt-1">📍 City Auditorium • 📅 Sep 14, 2025 • ⏰ 7:00 PM</p>
       </div>
 
       <!-- Booking Form -->
       <form id="bookingForm" class="space-y-6">
-
-        <!-- Ticket Selection -->
-        <div>
-          <label class="block text-sm font-medium mb-1">🎫 Select Ticket Type</label>
-          <select id="ticketType" class="w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none transition">
-            <option value="General">General – ₹500</option>
-            <option value="VIP">VIP – ₹1200</option>
-            <option value="Student">Student – ₹300</option>
-          </select>
-        </div>
-
-        <!-- Quantity -->
-        <div>
-          <label class="block text-sm font-medium mb-1">🔢 Quantity</label>
-          <input type="number" id="quantity" value="1" min="1" max="5" class="w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none transition">
-        </div>
 
         <!-- Attendee Details -->
         <div>
@@ -71,9 +55,14 @@
           <input type="tel" id="phone" required placeholder="10-digit number" pattern="[0-9]{10}" class="mt-1 w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none transition">
         </div>
 
+        <!-- Quantity -->
+        <div>
+          <label class="block text-sm font-medium mb-1">🔢 Quantity</label>
+          <input type="number" id="quantity" value="1" min="1" max="5" class="w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#2563EB] focus:outline-none transition">
+        </div>
+
         <!-- Booking Summary -->
         <div id="summary" class="bg-[#EFF6FF] border rounded-lg p-4 text-sm shadow-inner">
-          <p><span class="font-semibold">Ticket Type:</span> General</p>
           <p><span class="font-semibold">Quantity:</span> 1</p>
           <p><span class="font-semibold">Total Price:</span> ₹500</p>
         </div>
@@ -93,24 +82,18 @@
 
   <!-- Script -->
   <script>
-    const ticketType = document.getElementById("ticketType");
     const quantity = document.getElementById("quantity");
     const summary = document.getElementById("summary");
 
     function updateSummary() {
-      let price = 500;
-      if (ticketType.value === "VIP") price = 1200;
-      if (ticketType.value === "Student") price = 300;
-
+      const price = 500; // fixed since only one ticket type
       const qty = parseInt(quantity.value) || 1;
       summary.innerHTML = `
-        <p><span class="font-semibold">Ticket Type:</span> ${ticketType.value}</p>
         <p><span class="font-semibold">Quantity:</span> ${qty}</p>
         <p><span class="font-semibold">Total Price:</span> ₹${price * qty}</p>
       `;
     }
 
-    ticketType.addEventListener("change", updateSummary);
     quantity.addEventListener("input", updateSummary);
 
     document.getElementById("bookingForm").addEventListener("submit", function(e) {

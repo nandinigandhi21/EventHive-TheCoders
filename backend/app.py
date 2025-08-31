@@ -18,6 +18,10 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()
+
 # ---------------- Models ---------------- #
 class User(db.Model):
     __tablename__ = "users"
@@ -46,9 +50,27 @@ class Event(db.Model):
     status = db.Column(db.String(20), default="draft")     # draft or published
     organizer_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
+class Booking(db.Model):
+    __tablename__ = "bookings"
+
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
+
+    full_name = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+
+    quantity = db.Column(db.Integer, nullable=False)
+    ticket_type = db.Column(db.String(50), nullable=False)
+    total_price = db.Column(db.Float, nullable=False)
+
+    created_at = db.Column(db.DateTime, server_default=func.now())
+
+    # (Optional, safe) relationship back to Event; doesn't affect other code
+    event = db.relationship("Event", backref=db.backref("bookings", lazy=True))
+
 with app.app_context():
     db.create_all()
-    # 🔥 Ensure all statuses are lowercase
     for e in Event.query.all():
         if e.status:
             e.status = e.status.lower()
@@ -410,6 +432,49 @@ def analyze_feedback():
         "sentiment": sentiment,
         "polarity": polarity
     })
+
+# ---------------- Single Event Details ---------------- #
+@app.route("/api/events/<int:event_id>", methods=["GET"])
+def get_event_by_id(event_id):
+    try:
+        event = Event.query.get(event_id)
+        if not event or event.status.lower() != "published":
+            return jsonify({"error": "Event not found"}), 404
+
+        event_data = {
+            "id": event.id,
+            "title": event.title,
+            "description": event.description,
+            "category": event.category,
+            "date": event.date,
+            "time": event.time,
+            "location": event.location,
+            "ticket_type": event.ticket_type,
+            "price": event.price,
+            "max_quantity": event.max_quantity,
+            "organizer_id": event.organizer_id
+        }
+        return jsonify(event_data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+# ----------------- Event Details ----------------- #
+@app.route("/api/events/<int:event_id>", methods=["GET"])
+def get_event(event_id):
+    event = Event.query.get(event_id)
+    if not event:
+        return jsonify({"error": "Event not found"}), 404
+
+    event_data = {
+        "id": event.id,
+        "name": event.name,
+        "location": event.location,
+        "date": event.date.strftime("%Y-%m-%d"),
+        "time": event.time.strftime("%H:%M") if event.time else None,
+        "ticket_type": event.ticket_type,
+        "ticket_price": event.ticket_price,
+    }
+    return jsonify(event_data), 200
 
 
 if __name__ == "__main__":

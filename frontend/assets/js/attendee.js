@@ -70,13 +70,14 @@ async function fetchEvents() {
     if (!res.ok) throw new Error("Failed to fetch events");
     const data = await res.json();
     allEvents = data.items || data; // backend may return {items: []} or []
+
     applyFilters();
   } catch (err) {
     console.error("❌ Backend not ready, using fallback demo data", err);
     allEvents = [
-      { id: 1, title: "AI Bootcamp", description: "Deep dive into ML & DL.", category: "workshops", date: "2025-09-12", location: "Bangalore", ticket_type: "Paid" },
-      { id: 2, title: "Music Fest", description: "Live music and food.", category: "music", date: "2025-09-20", location: "Mumbai", ticket_type: "Free" },
-      { id: 3, title: "City Marathon", description: "Run for a cause.", category: "sports", date: "2025-10-01", location: "Delhi", ticket_type: "Paid" }
+      { id: 1, title: "AI Bootcamp", description: "Deep dive into ML & DL.", category: "workshops", date: "2025-09-12", time: "10:00 AM", location: "Bangalore", ticket_type: "Paid", price: 499 },
+      { id: 2, title: "Music Fest", description: "Live music and food.", category: "music", date: "2025-09-20", time: "06:00 PM", location: "Mumbai", ticket_type: "Free", price: 0 },
+      { id: 3, title: "City Marathon", description: "Run for a cause.", category: "sports", date: "2025-10-01", time: "07:00 AM", location: "Delhi", ticket_type: "Paid", price: 299 }
     ];
     applyFilters();
   }
@@ -102,9 +103,41 @@ function applyFilters() {
   renderPagination(filtered.length);
 }
 
-// ---------- Card Click: Redirect to Details ----------
-function viewEvent(id) {
-  window.location.href = `event-details.html?eventId=${id}`;
+// ---------- Card Click: Show Modal with Details ----------
+async function viewEvent(id) {
+  try {
+    const res = await fetch(`http://127.0.0.1:5000/api/events/${id}`);
+    if (!res.ok) throw new Error("Failed to fetch event details");
+
+    const e = await res.json();
+
+    document.getElementById("modalTitle").textContent = e.title;
+    document.getElementById("modalDate").textContent = `📅 ${e.date} • ${e.time || "TBA"}`;
+    document.getElementById("modalLocation").textContent = `📍 ${e.location}`;
+    document.getElementById("modalDescription").textContent = e.description;
+    document.getElementById("modalPrice").textContent = e.ticket_type?.toLowerCase() === "free" 
+      ? "Free Entry" 
+      : `₹${e.price}`;
+
+    // set booking button
+    const bookBtn = document.getElementById("bookBtn");
+    bookBtn.onclick = () => {
+      window.open(`book-tickets.html?eventId=${e.id}`, "_blank");
+    };
+
+    // show modal
+    document.getElementById("eventModal").classList.remove("hidden");
+    document.getElementById("eventModal").classList.add("flex");
+  } catch (err) {
+    console.error(err);
+    alert("Unable to load event details");
+  }
+}
+
+// ---------- Close Modal ----------
+function closeModal() {
+  document.getElementById("eventModal").classList.add("hidden");
+  document.getElementById("eventModal").classList.remove("flex");
 }
 
 // ---------- Attach Listeners ----------
