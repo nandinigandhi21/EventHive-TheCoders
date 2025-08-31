@@ -19,17 +19,16 @@ function renderEvents(events) {
 
   grid.innerHTML = events.map(e => `
     <div 
-      class="bg-white shadow rounded-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl cursor-pointer"
+      class="bg-white shadow rounded-xl overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl cursor-pointer flex items-center justify-center"
       onclick="viewEvent(${e.id})"
     >
-      <img src="${e.image || 'assets/img/sample-event.jpg'}" alt="Event Image" class="w-full h-40 object-cover">
-      <div class="p-4">
-        <h3 class="text-lg font-semibold">${e.title}</h3>
-        <p class="text-sm text-gray-600">${e.date} • ${e.location}</p>
-        <p class="text-xs text-gray-500 mt-1 line-clamp-2">${e.description}</p>
-        <span class="inline-block mt-2 text-xs ${e.ticket_type?.toLowerCase() === 'free' 
+      <div class="p-3 text-center w-full h-45 flex flex-col justify-center">
+        <h3 class="text-xl font-bold text-[#1E293B] mb-2">${e.title}</h3>
+        <p class="text-sm text-gray-600 mb-1">${e.date} • ${e.location}</p>
+        <p class="text-sm text-gray-500 mb-2 line-clamp-2">${e.description}</p>
+        <span class="inline-block mt-2 text-sm ${e.ticket_type?.toLowerCase() === 'free' 
           ? 'bg-green-100 text-green-700' 
-          : 'bg-yellow-100 text-yellow-700'} px-2 py-1 rounded">
+          : 'bg-yellow-100 text-yellow-700'} px-3 py-1 rounded-full">
           ${e.ticket_type || "General"}
         </span>
       </div>
@@ -70,7 +69,7 @@ async function fetchEvents() {
 
     if (!res.ok) throw new Error("Failed to fetch events");
     const data = await res.json();
-    allEvents = data.items || []; // ✅ always read items array
+    allEvents = data.items || data; // backend may return {items: []} or []
     applyFilters();
   } catch (err) {
     console.error("❌ Backend not ready, using fallback demo data", err);
